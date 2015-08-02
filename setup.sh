@@ -38,12 +38,10 @@ gpgcheck=1" > /etc/yum.repos.d/MariaDB.repo
     read -p "Setup Java? [y/n] " yn
     case $yn in
         [Yy]* )
-          cd /opt/
           wget --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u45-b14/jdk-8u45-linux-x64.tar.gz"
-          tar xzf jdk-8u45-linux-x64.tar.gz
+          tar xzf jdk-8u45-linux-x64.tar.gz -C /opt/jdk1.8.0_45/bin/java
           rm -rf jdk-8u45-linux-x64.tar.gz
           
-          cd /opt/jdk1.8.0_45/
           alternatives --install /usr/bin/java java /opt/jdk1.8.0_45/bin/java 2
           alternatives --config java
           alternatives --install /usr/bin/jar jar /opt/jdk1.8.0_45/bin/jar 2
@@ -63,11 +61,10 @@ gpgcheck=1" > /etc/yum.repos.d/MariaDB.repo
     read -p "Setup Tomcat? [y/n] " yn
     case $yn in
         [Yy]* )
-          cd /usr/share
           wget http://mirror.apache-kr.org/tomcat/tomcat-8/v8.0.23/bin/apache-tomcat-8.0.23.tar.gz
-          tar xzf apache-tomcat-8.0.23.tar.gz
-          rm -rf apache-tomcat-8.0.23.tar.gz
+          tar xzf apache-tomcat-8.0.23.tar.gz -C /usr/share/apache-tomcat-8.0.23
           ln -s /usr/share/apache-tomcat-8.0.23 /usr/share/apache-tomcat
+          rm -rf apache-tomcat-8.0.23.tar.gz
           mv /usr/share/apache-tomcat/conf/tomcat-users.xml /usr/share/apache-tomcat/conf/tomcat-users.bak
           echo "<?xml version='1.0' encoding='utf-8'?>
 <tomcat-users xmlns=\"http://tomcat.apache.org/xml\"
@@ -80,7 +77,7 @@ gpgcheck=1" > /etc/yum.repos.d/MariaDB.repo
   <user username=\"conectTomcatAdmin\" password=\"tomcat!conect1\" role=\"manager-gui, manager-cui\"/>
 </tomcat-users>" > /usr/share/apache-tomcat/conf/tomcat-users.xml
           echo "CATALINA_HOME=/usr/share/apache-tomcat" >> /etc/environment
-          cp tomcat /etc/init.d/tomcat
+          cp -a tomcat /etc/init.d/tomcat
           chmod 755 /etc/init.d/tomcat
           service tomcat start
           chkconfig tomcat on
@@ -93,19 +90,17 @@ gpgcheck=1" > /etc/yum.repos.d/MariaDB.repo
     case $yn in
         [Yy]* )
           yum install -y httpd-devel
-          cd /tmp
           wget http://mirror.apache-kr.org/tomcat/tomcat-connectors/jk/tomcat-connectors-1.2.40-src.tar.gz
-          tar zxvf tomcat-connectors-1.2.40-src.tar.gz
-          cd tomcat-connectors-1.2.40-src/native
-          ./configure --with-apxs=/usr/sbin/apxs
-          make
-          make install
-          rm /tmp/tomcat-connectors-1.2.40-src.tar.gz
+          tar zxvf tomcat-connectors-1.2.40-src.tar.gz -C /tmp/tomcat-connectors-1.2.40-src
+          /bin/bash /tmp/tomcat-connectors-1.2.40-src/native/configure --with-apxs=/usr/sbin/apxs
+          /bin/bash /tmp/tomcat-connectors-1.2.40-src/native/make
+          /bin/bash /tmp/tomcat-connectors-1.2.40-src/native/make install
+          rm tomcat-connectors-1.2.40-src.tar.gz
           rm -rf /tmp/tomcat-connectors-1.2.40-src
 
-          cp mod_jk.conf /etc/httpd/conf.d/mod_jk.conf
-          cp workers.properties /etc/httpd/conf/workers.properties
-          cp uriworkermap.properties /etc/httpd/conf/uriworkermap.properties
+          cp -a mod_jk.conf /etc/httpd/conf.d/mod_jk.conf
+          cp -a workers.properties /etc/httpd/conf/workers.properties
+          cp -a uriworkermap.properties /etc/httpd/conf/uriworkermap.properties
           break;;
         [Nn]* ) break;;
         * ) echo "Please answer yes or no.";;
