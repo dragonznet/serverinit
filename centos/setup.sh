@@ -11,8 +11,8 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 
 else
-    while ture; do
-      read -p -r "Setup APM? [y/n] " yn
+    while [ 1 -eq 1 ]; do
+      read -p "Setup APM? [y/n] " yn
       case $yn in
           [Yy]* )
             echo -e "Installing Aapche HTTP..."
@@ -21,11 +21,7 @@ else
             service httpd start
           
             echo -e "Installing MariaDB 10.1...."
-            echo -e "[mariadb]\n" \
-                    "name = MariaDB\n" \
-                    "baseurl = http://yum.mariadb.org/10.1/centos6-amd64\n" \
-                    "gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB\n" \
-                    "gpgcheck=1" > /etc/yum.repos.d/MariaDB.repo
+            echo -e "[mariadb] \nname = MariaDB \nbaseurl = http://yum.mariadb.org/10.1/centos6-amd64 \ngpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB \ngpgcheck=1" > /etc/yum.repos.d/MariaDB.repo
             yum install -y MariaDB-server MariaDB-client
             chkconfig mysql on
             service mysql start
@@ -49,8 +45,8 @@ else
       esac
     done
     
-    while true; do
-      read -p -r "Setup Java? [y/n] " yn
+    while [ 1 -eq 1 ]; do
+      read -p "Setup Java? [y/n] " yn
       case $yn in
           [Yy]* )
             wget --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" \
@@ -79,8 +75,8 @@ else
       esac
     done
 
-    while ture; do
-      read -p -r "Setup Tomcat? [y/n] " yn
+    while [ 1 -eq 1 ]; do
+      read -p "Setup Tomcat? [y/n] " yn
       case $yn in
           [Yy]* )
             echo -e "Installing Tomcat 8.0.30..."
@@ -123,8 +119,8 @@ else
       esac
     done
 
-    while ture; do
-      read -p -r "Setup mod_jk(Apache-Tomcat connector)? [y/n]" yn
+    while [ 1 -eq 1 ]; do
+      read -p "Setup mod_jk(Apache-Tomcat connector)? [y/n]" yn
       case $yn in
           [Yy]* )
             echo -e "Installing mod_jk..."
